@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<robot name="curiosity_mars_rover" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find space_rover_description)/urdf/macros.xacro"/>
+  <xacro:include filename="$(find space_rover_description)/urdf/curiosity_mars_rover_properties.xacro"/>
+  <xacro:include filename="$(find space_rover_description)/urdf/curiosity_mars_rover.gazebo"/>
+  <xacro:include filename="$(find space_rover_description)/urdf/chassis.xacro"/>
+  <xacro:include filename="$(find space_rover_description)/urdf/wheel.xacro"/>
+  <xacro:include filename="$(find space_rover_description)/urdf/left_wheel_group.xacro"/>
+  <xacro:include filename="$(find space_rover_description)/urdf/right_wheel_group.xacro"/>
+  <xacro:include filename="$(find space_rover_description)/urdf/arm.xacro"/>
+  <xacro:include filename="$(find space_rover_description)/urdf/sensor_mast.xacro"/>
+
+  <xacro:chassis_body/>
+  <xacro:left_wheel_tree/>
+  <xacro:right_wheel_tree/>
+  <xacro:arm/>
+  <xacro:sensor_mast/>
+
+</robot>
