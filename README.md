@@ -74,23 +74,14 @@ This is the most complete package in the workspace. It contains:
 - mesh and texture assets
 - legacy ROS 1 launch files kept for reference
 
-## Current Progress
+## Project Scope
 
-What is already present:
+The workspace is structured around two ROS 2 packages:
 
-- ROS 2 workspace layout
-- package separation between project logic and robot description
-- rover description package with Xacro-based organization
-- launch files for local visualization and Gazebo simulation
-- asset folders for meshes, models, and worlds
+- `space_rover`
+- `space_rover_description`
 
-What is still incomplete or evolving:
-
-- full rover control stack
-- autonomy and navigation pipeline
-- testing and CI setup
-- documented hardware/software interface assumptions
-- polished package metadata for a public GitHub release
+The repository combines robot description, visualization, simulation resources, and the base structure for future rover software in one workspace.
 
 ## Main Files To Know
 
@@ -190,41 +181,7 @@ If `check_urdf` is installed, you can validate the generated file:
 check_urdf /tmp/curiosity_rover.urdf
 ```
 
-## GitHub Preparation Notes
-
-This repository is organized to be pushed as a single GitHub project with both ROS 2 packages under `src/`.
-
-Before pushing publicly, review:
-
-- package descriptions
-- package versioning
-- repository URL fields in package metadata
-- license consistency
-- screenshots or demo media you may want to add later
-
-At the moment, the repository root has Git initialized, but there is no `origin` remote configured yet in this workspace. If you want to connect it to GitHub, add your remote and push from the workspace root.
-
-Example:
-
-```bash
-cd /home/rishabh/space_rover
-git branch -M main
-git remote add origin https://github.com/<your-username>/space_rover.git
-git push -u origin main
-```
-
-## Recommended Next Steps
-
-Good next improvements for this repository:
-
-- add screenshots or GIFs for RViz and Gazebo
-- add a GitHub Actions workflow for `colcon build`
-- add Xacro / URDF validation checks
-- add real control and navigation nodes under `space_rover`
-- document the rover kinematics and coordinate frames
-- clean up any unused legacy assets over time
-
 ## Summary
 
-This repository is already in a better state for GitHub when treated as a ROS 2 workspace with one active description package and one future-facing core package. The main rover model and simulation assets are present, but the project should still be presented as a developing robotics project rather than a finished product.
+This repository presents a ROS 2 rover workspace centered on a Curiosity-inspired robot model. It brings together modular Xacro-based robot description files, RViz visualization, Gazebo simulation resources, and a clean package layout for continued rover software development.
 # Space_Rover

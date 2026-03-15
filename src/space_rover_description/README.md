@@ -10,7 +10,7 @@ This package contains the visual, structural, and simulation-facing parts of the
 
 This package is usable, but the overall project is still in progress.
 
-The description stack is already organized enough for development and GitHub publishing, but it should still be treated as an evolving package rather than a finalized simulation product.
+The description stack contains the main rover model, simulation resources, and visualization setup used throughout the workspace.
 
 ## What This Package Contains
 
@@ -142,4 +142,4 @@ The `ros1_launch/` directory is kept only as a legacy reference.
 
 ## Package Role In The Repository
 
-Inside this repository, `space_rover_description` is the package that currently demonstrates the most visible progress. It provides the rover model, simulation assets, and launch setup that make the project presentable on GitHub even before the full rover software stack is complete.
+Inside this repository, `space_rover_description` provides the rover model, simulation assets, and launch setup that define the visual and structural core of the project.

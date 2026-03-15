@@ -10,15 +10,15 @@ This package is reserved for the software side of the rover system. The descript
 
 This package is still in an early stage.
 
-Right now it mainly provides:
+It currently provides:
 
 - package metadata
 - `ament_cmake` build support
 - a clean place to add future project code
 
-## Planned Responsibilities
+## Package Role
 
-Expected future contents include:
+This package is intended to contain:
 
 - rover control nodes
 - actuator and command interfaces
@@ -44,4 +44,4 @@ source install/setup.bash
 
 ## Relationship To Other Packages
 
-This package is intended to work alongside `space_rover_description`, which currently contains the model, simulation, and visualization resources for the rover.
+This package works alongside `space_rover_description`, which contains the robot model, simulation assets, and visualization resources for the rover.
