@@ -1,27 +1,43 @@
-# space_rover_description
+# `space_rover_description`
 
-Curiosity-style rover description package for ROS 2.
+ROS 2 robot description package for the Curiosity-inspired rover model.
+
+## Purpose
+
+This package contains the visual, structural, and simulation-facing parts of the project. It is currently the most complete package in the repository and is the main reason the workspace can already be demonstrated in RViz and Gazebo.
+
+## Current Status
+
+This package is usable, but the overall project is still in progress.
+
+The description stack is already organized enough for development and GitHub publishing, but it should still be treated as an evolving package rather than a finalized simulation product.
 
 ## What This Package Contains
 
-- Modular Xacro/URDF model for rover body, suspension, wheels, arm, and mast
-- Mesh assets (`.dae`, `.stl`, textures)
-- RViz configs
-- Gazebo world and model assets
-- ROS 2 launch files for display and simulation
-- Legacy ROS1 launch files kept in `ros1_launch/` for reference
+- modular `URDF` and `Xacro` rover model files
+- mesh and texture assets
+- Gazebo-related files and world resources
+- RViz configurations
+- ROS 2 launch files
+- older ROS 1 launch files kept for reference
 
-## Main Files
+## Key Files
 
-- Robot entry Xacro:
+- Main rover entry file:
   - `urdf/curiosity_rover.urdf.xacro`
 - ROS 2 launch files:
   - `launch/display.launch.py`
   - `launch/gazebo.launch.py`
-- RViz config:
+- RViz configuration:
   - `rviz/view_rover.rviz`
+- Gazebo worlds:
+  - `worlds/empty.sdf`
+  - `worlds/simple.world`
+  - `worlds/mars_curiosity.world`
 
-## Included URDF Modules
+## Xacro / URDF Modules
+
+The rover model is split into reusable parts:
 
 - `urdf/chassis.xacro`
 - `urdf/wheel.xacro`
@@ -33,9 +49,22 @@ Curiosity-style rover description package for ROS 2.
 - `urdf/macros.xacro`
 - `urdf/curiosity_mars_rover.gazebo`
 
-## Dependencies
+## Asset Folders
 
-Runtime dependencies declared in `package.xml`:
+- `meshes/`
+  Visual mesh resources and texture files for the rover
+- `models/`
+  Gazebo model assets such as rocks and path elements
+- `worlds/`
+  Simulation world definitions
+- `rviz/`
+  Stored RViz view configurations
+- `config/`
+  Configuration files related to control and simulation
+
+## Runtime Dependencies
+
+Dependencies currently declared in `package.xml`:
 
 - `robot_state_publisher`
 - `joint_state_publisher`
@@ -47,51 +76,70 @@ Runtime dependencies declared in `package.xml`:
 
 ## Build
 
-From workspace root:
-
 ```bash
+cd /home/rishabh/space_rover
 source /opt/ros/jazzy/setup.bash
 colcon build --packages-select space_rover_description
 source install/setup.bash
 ```
 
-## Run in RViz
+## Launch In RViz
 
 ```bash
+cd /home/rishabh/space_rover
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
 ros2 launch space_rover_description display.launch.py
 ```
 
-## Run in Gazebo
+This is useful for checking:
+
+- model structure
+- joint relationships
+- frame visibility
+- visual appearance of the rover
+
+## Launch In Gazebo
 
 ```bash
+cd /home/rishabh/space_rover
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
 ros2 launch space_rover_description gazebo.launch.py
 ```
 
-## Validate URDF/Xacro
+This launch path is intended to:
+
+- process the Xacro rover model
+- publish `robot_description`
+- start Gazebo through `ros_gz_sim`
+- spawn the rover into the world
+- bridge the simulation clock into ROS 2
+
+## Validate The Model
+
+Generate a URDF from the main Xacro file:
 
 ```bash
+cd /home/rishabh/space_rover
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
-xacro $(ros2 pkg prefix space_rover_description)/share/space_rover_description/urdf/curiosity_rover.urdf.xacro > /tmp/curiosity.urdf
-check_urdf /tmp/curiosity.urdf
+xacro src/space_rover_description/urdf/curiosity_rover.urdf.xacro > /tmp/curiosity_rover.urdf
 ```
 
-## Important ROS1 Compatibility Note
+Validate it if `check_urdf` is available:
 
-Legacy ROS1 `.launch` files are preserved under:
+```bash
+check_urdf /tmp/curiosity_rover.urdf
+```
 
-- `ros1_launch/`
+## ROS 1 Compatibility Note
 
-These files are not for `ros2 launch`.
-Use only `.launch.py` files in `launch/`.
+The `ros1_launch/` directory is kept only as a legacy reference.
 
-## Assets Origin
+- Use `launch/*.launch.py` with ROS 2
+- Do not run `ros1_launch/*.launch` with `ros2 launch`
 
-This package includes model resources derived from a Curiosity rover description workflow and was integrated into this ROS 2 package structure.
+## Package Role In The Repository
 
-## Repository Layout
-
-This package is intended to live in the same repository as `space_rover`:
-
-- repo: `space_rover`
-- path: `src/space_rover_description/`
+Inside this repository, `space_rover_description` is the package that currently demonstrates the most visible progress. It provides the rover model, simulation assets, and launch setup that make the project presentable on GitHub even before the full rover software stack is complete.

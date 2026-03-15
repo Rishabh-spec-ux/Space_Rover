@@ -5,5 +5,9 @@ log/
 __pycache__/
 .DS_Store
 desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
 curiosity-mars-rover/
 .repo_backups/

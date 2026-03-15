@@ -1,45 +1,47 @@
-# space_rover
+# `space_rover`
 
-ROS 2 core package scaffold for the Space Rover project.
+Core ROS 2 package for the overall rover project.
 
 ## Purpose
 
-`space_rover` is intended to host rover runtime logic and integration code, while robot geometry and simulation assets are maintained in `space_rover_description`.
+This package is reserved for the software side of the rover system. The description package already contains the robot model and simulation assets, while `space_rover` is where the project can grow into a full robotics stack.
 
-Typical future contents for this package:
+## Current Status
+
+This package is still in an early stage.
+
+Right now it mainly provides:
+
+- package metadata
+- `ament_cmake` build support
+- a clean place to add future project code
+
+## Planned Responsibilities
+
+Expected future contents include:
 
 - rover control nodes
-- planning/navigation integration
-- controller orchestration launch files
-- mission behavior/state-machine code
-
-## Current State
-
-This package currently provides:
-
-- valid ROS 2 package metadata
-- `ament_cmake` build support
-- dependency link to `space_rover_description`
+- actuator and command interfaces
+- mission or behavior logic
+- navigation integration
+- high-level launch files that combine subsystems
 
 ## Build
 
-From workspace root:
-
 ```bash
+cd /home/rishabh/space_rover
 source /opt/ros/jazzy/setup.bash
 colcon build --packages-select space_rover
 source install/setup.bash
 ```
 
-## Package Metadata
+## Notes
 
 - Package name: `space_rover`
 - Build type: `ament_cmake`
 - License: `MIT`
+- Repository path: `src/space_rover/`
 
-## Repository Layout
+## Relationship To Other Packages
 
-This package is intended to live in the same repository as `space_rover_description`:
-
-- repo: `space_rover`
-- path: `src/space_rover/`
+This package is intended to work alongside `space_rover_description`, which currently contains the model, simulation, and visualization resources for the rover.
