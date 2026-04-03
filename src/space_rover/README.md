@@ -44,4 +44,4 @@ source install/setup.bash
 
 ## Relationship To Other Packages
 
-This package works alongside `space_rover_description`, which contains the robot model, simulation assets, and visualization resources for the rover.
+This package works alongside `space_rover_description`, which contains the robot model, Gazebo Sim launch files, world assets, and visualization resources for the rover.

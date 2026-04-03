@@ -1,6 +1,6 @@
 # Space Rover
 
-ROS 2 workspace for a Curiosity-inspired space rover project.
+ROS 2 workspace for a Curiosity-inspired space rover project using ROS 2 Jazzy and Gazebo Sim via `ros_gz`.
 
 ## Project Status
 
@@ -152,6 +152,30 @@ This launch file is intended to:
 - spawn the rover entity
 - bridge the simulation clock into ROS 2
 
+The `gazebo.launch.py` file also accepts a `world` argument, so you can start the rover in a different world without editing code.
+
+Launch the rover in the Mars world:
+
+```bash
+cd /home/rishabh/space_rover
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+ros2 launch space_rover_description gazebo.launch.py world:=mars_curiosity.world
+```
+
+Available world files in `space_rover_description/worlds/`:
+
+- `empty.sdf`
+- `simple.world`
+- `mars_curiosity.world`
+
+## Gazebo Notes
+
+- The simulation uses Gazebo Sim through `ros_gz_sim`, not Gazebo Classic.
+- Older Gazebo Classic ROS plugins were removed from the rover model because they are not available in this setup.
+- The front arm and camera mast are currently fixed in place in simulation so they do not collapse under gravity before controllers are added.
+- If Gazebo prints `libEGL` warnings, those are graphics-driver warnings and are usually separate from the robot model itself.
+
 ## ROS 1 vs ROS 2 Notes
 
 This repository contains both ROS 2 launch files and older ROS 1 launch files.
@@ -184,4 +208,3 @@ check_urdf /tmp/curiosity_rover.urdf
 ## Summary
 
 This repository presents a ROS 2 rover workspace centered on a Curiosity-inspired robot model. It brings together modular Xacro-based robot description files, RViz visualization, Gazebo simulation resources, and a clean package layout for continued rover software development.
-# Space_Rover

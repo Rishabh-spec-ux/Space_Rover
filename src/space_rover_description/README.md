@@ -1,10 +1,10 @@
 # `space_rover_description`
 
-ROS 2 robot description package for the Curiosity-inspired rover model.
+ROS 2 robot description package for the Curiosity-inspired rover model, including RViz visualization assets and Gazebo Sim world resources.
 
 ## Purpose
 
-This package contains the visual, structural, and simulation-facing parts of the project. It is currently the most complete package in the repository and is the main reason the workspace can already be demonstrated in RViz and Gazebo.
+This package contains the visual, structural, and simulation-facing parts of the project. It is currently the most complete package in the repository and is the main reason the workspace can already be demonstrated in RViz and Gazebo Sim.
 
 ## Current Status
 
@@ -115,6 +115,45 @@ This launch path is intended to:
 - start Gazebo through `ros_gz_sim`
 - spawn the rover into the world
 - bridge the simulation clock into ROS 2
+
+The launch file accepts a `world` argument for selecting a world from `worlds/`.
+
+Examples:
+
+Launch with the default empty world:
+
+```bash
+ros2 launch space_rover_description gazebo.launch.py
+```
+
+Launch with the Mars world:
+
+```bash
+ros2 launch space_rover_description gazebo.launch.py world:=mars_curiosity.world
+```
+
+## World Resources
+
+World files available in this package:
+
+- `worlds/empty.sdf`
+- `worlds/simple.world`
+- `worlds/mars_curiosity.world`
+
+Gazebo model assets used by the Mars world are stored in:
+
+- `models/curiosity_path/`
+- `models/rock/`
+
+The Gazebo launch file sets `GZ_SIM_RESOURCE_PATH` so the world can resolve these local models.
+
+## Simulation Notes
+
+- The package is configured for Gazebo Sim / `ros_gz`, not Gazebo Classic.
+- Gazebo Classic plugin references were removed from the rover model because they are not compatible with the current launch path.
+- The `box_inertia` macro in `urdf/macros.xacro` uses a corrected `izz` formula so Gazebo accepts the link inertias.
+- The mast and manipulator arm are currently fixed in place in simulation to avoid passive joints folding under gravity before controllers are added.
+- `arm_02` uses a simple collision box in simulation because the original collision mesh caused Gazebo physics crashes.
 
 ## Validate The Model
 
