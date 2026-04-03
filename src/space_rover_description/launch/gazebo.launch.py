@@ -7,7 +7,7 @@ from launch.actions import (
     SetEnvironmentVariable,
 )
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, Command
+from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 
@@ -18,23 +18,34 @@ def generate_launch_description():
 
     # --- Paths ---
     xacro_file = os.path.join(pkg_share, 'urdf', 'curiosity_rover.urdf.xacro')
-    world_file = os.path.join(pkg_share, 'worlds', 'empty.sdf')
-
     # Gazebo resolves package:// → model:// URIs by searching GZ_SIM_RESOURCE_PATH
     # for a folder named "space_rover_description". Point to the parent of pkg_share
     # so that model://space_rover_description/meshes/... resolves correctly.
     gz_resource_path = SetEnvironmentVariable(
         name='GZ_SIM_RESOURCE_PATH',
-        value=os.path.dirname(pkg_share),
+        value=os.pathsep.join([
+            os.path.dirname(pkg_share),
+            pkg_share,
+            os.path.join(pkg_share, 'models'),
+        ]),
     )
 
     # --- Launch arguments ---
     use_sim_time = LaunchConfiguration('use_sim_time')
+    world = LaunchConfiguration('world')
+
+    world_file = PathJoinSubstitution([pkg_share, 'worlds', world])
 
     declare_use_sim_time = DeclareLaunchArgument(
         'use_sim_time',
         default_value='true',
         description='Use simulation (Gazebo) clock',
+    )
+
+    declare_world = DeclareLaunchArgument(
+        'world',
+        default_value='empty.sdf',
+        description='World file inside space_rover_description/worlds',
     )
 
     # --- Process XACRO → URDF ---
@@ -68,7 +79,7 @@ def generate_launch_description():
             )
         ),
         launch_arguments={
-            'gz_args': f'-r {world_file}',
+            'gz_args': ['-r ', world_file],
         }.items(),
     )
 
@@ -97,6 +108,7 @@ def generate_launch_description():
     return LaunchDescription([
         gz_resource_path,
         declare_use_sim_time,
+        declare_world,
         robot_state_publisher,
         joint_state_publisher,
         gazebo,
