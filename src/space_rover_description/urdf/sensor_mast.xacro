@@ -60,13 +60,10 @@
 	</link>
 
 
-  	<joint name="mast_p_joint" type="revolute">
+  	<joint name="mast_p_joint" type="fixed">
 		<parent link="chassis_to_mast_p"/>
 		<child link="mast_p"/>
 		<origin xyz="0 0 0" rpy="0 0 0"/>
-		<limit lower="${mast_p_lower_limit}" upper="${mast_p_upper_limit}" effort="10000.0" velocity="100.0"/>
-        <axis xyz="0 1 0"/>
-        <joint_properties damping="0.0" friction="0.0"/>
 	</joint>
 
     <transmission name="mast_p_trans">
@@ -217,13 +214,10 @@
 	</link>
 
 
-  	<joint name="mast_cameras_joint" type="revolute">
+  	<joint name="mast_cameras_joint" type="fixed">
 		<parent link="mast_02_to_mast_cameras"/>
 		<child link="mast_cameras"/>
 		<origin xyz="0 0 0" rpy="0 0 0"/>
-		<limit lower="${-mast_cameras_limit}" upper="${mast_cameras_limit}" effort="10000.0" velocity="100.0"/>
-        <axis xyz="1 0 0"/>
-        <joint_properties damping="0.0" friction="0.0"/>
 	</joint>
 
     <transmission name="mast_02_trans">
