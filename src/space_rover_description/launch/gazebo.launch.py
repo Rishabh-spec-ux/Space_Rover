@@ -30,6 +30,21 @@ def generate_launch_description():
         ]),
     )
 
+    # Prefer the NVIDIA GL/EGL vendors. This avoids Gazebo / Qt picking Mesa's
+    # EGL path on systems with NVIDIA GPUs, which can crash camera rendering.
+    glx_vendor = SetEnvironmentVariable(
+        name='__GLX_VENDOR_LIBRARY_NAME',
+        value='nvidia',
+    )
+    egl_vendor = SetEnvironmentVariable(
+        name='__EGL_VENDOR_LIBRARY_FILENAMES',
+        value='/usr/share/glvnd/egl_vendor.d/10_nvidia.json',
+    )
+    qt_opengl = SetEnvironmentVariable(
+        name='QT_OPENGL',
+        value='desktop',
+    )
+
     # --- Launch arguments ---
     use_sim_time = LaunchConfiguration('use_sim_time')
     world = LaunchConfiguration('world')
@@ -44,7 +59,7 @@ def generate_launch_description():
 
     declare_world = DeclareLaunchArgument(
         'world',
-        default_value='empty.sdf',
+        default_value='mars_curiosity.world',
         description='World file inside space_rover_description/worlds',
     )
 
@@ -92,7 +107,7 @@ def generate_launch_description():
             '-name', 'curiosity_rover',
             '-x', '0.0',
             '-y', '0.0',
-            '-z', '1.0',
+            '-z', '0.0',
         ],
         output='screen',
     )
@@ -101,12 +116,23 @@ def generate_launch_description():
     gz_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
-        arguments=['/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'],
+        arguments=[
+            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+            '/camera@sensor_msgs/msg/Image@gz.msgs.Image',
+            '/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',
+        ],
+        remappings=[
+            ('/camera', '/camera/image_raw'),
+            ('/camera_info', '/camera/camera_info'),
+        ],
         output='screen',
     )
 
     return LaunchDescription([
         gz_resource_path,
+        glx_vendor,
+        egl_vendor,
+        qt_opengl,
         declare_use_sim_time,
         declare_world,
         robot_state_publisher,

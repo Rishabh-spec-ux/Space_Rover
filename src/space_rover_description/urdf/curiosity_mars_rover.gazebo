@@ -9,10 +9,13 @@
 
   <gazebo reference="camera_link">
     <sensor type="camera" name="camera1">
+      <always_on>1</always_on>
       <update_rate>10.0</update_rate>
+      <visualize>true</visualize>
+      <topic>/camera</topic>
       <camera name="head">
-
-          <pose>0 0 0 0 0 1.57</pose>
+        <pose>0 0 0 0 0 0</pose>
+        <camera_info_topic>/camera_info</camera_info_topic>
 
         <horizontal_fov>1.3962634</horizontal_fov>
         <image>
