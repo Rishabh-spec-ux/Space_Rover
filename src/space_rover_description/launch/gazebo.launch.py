@@ -6,8 +6,10 @@ from launch.actions import (
     IncludeLaunchDescription,
     SetEnvironmentVariable,
 )
+from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution
+from launch.actions import RegisterEventHandler
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 
@@ -77,9 +79,31 @@ def generate_launch_description():
         output='screen',
     )
 
-    joint_state_publisher = Node(
-        package='joint_state_publisher',
-        executable='joint_state_publisher',
+    # Gazebo sensors may publish scoped frame ids such as
+    # `curiosity_rover/base_footprint/lidar_sensor`. Publish a static alias to
+    # the URDF lidar frame so RViz can transform incoming scans and clouds.
+    lidar_tf_alias = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        arguments=[
+            '--x', '0', '--y', '0', '--z', '0',
+            '--roll', '0', '--pitch', '0', '--yaw', '0',
+            '--frame-id', 'lidar_link',
+            '--child-frame-id', 'curiosity_rover/base_footprint/lidar_sensor',
+        ],
+        parameters=[{'use_sim_time': use_sim_time}],
+        output='screen',
+    )
+
+    imu_tf_alias = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        arguments=[
+            '--x', '0', '--y', '0', '--z', '0',
+            '--roll', '0', '--pitch', '0', '--yaw', '0',
+            '--frame-id', 'imu_link',
+            '--child-frame-id', 'curiosity_rover/base_footprint/imu_sensor',
+        ],
         parameters=[{'use_sim_time': use_sim_time}],
         output='screen',
     )
@@ -112,6 +136,67 @@ def generate_launch_description():
         output='screen',
     )
 
+    wheel_odom = Node(
+        package='space_rover_description',
+        executable='wheel_encoder_odometry',
+        parameters=[{
+            'use_sim_time': use_sim_time,
+            'wheel_radius': 0.242647,
+            'track_width': 1.53774,
+            'odom_frame': 'odom',
+            'base_frame': 'base_footprint',
+            'publish_tf': True,
+        }],
+        output='screen',
+    )
+
+    ackerman = Node(
+        package='space_rover_description',
+        executable='ackerman_6_wheels',
+        parameters=[{'use_sim_time': use_sim_time}],
+        output='screen',
+    )
+
+    joint_state_broadcaster_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
+        output='screen',
+    )
+
+    wheel_velocity_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['wheel_velocity_controller', '--controller-manager', '/controller_manager'],
+        output='screen',
+    )
+
+    steering_position_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['steering_position_controller', '--controller-manager', '/controller_manager'],
+        output='screen',
+    )
+
+    suspension_position_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['suspension_position_controller', '--controller-manager', '/controller_manager'],
+        output='screen',
+    )
+
+    spawn_controllers = RegisterEventHandler(
+        OnProcessExit(
+            target_action=spawn_entity,
+            on_exit=[
+                joint_state_broadcaster_spawner,
+                wheel_velocity_controller_spawner,
+                steering_position_controller_spawner,
+                suspension_position_controller_spawner,
+            ],
+        )
+    )
+
     # Bridge: forward /clock from Gazebo to ROS
     gz_bridge = Node(
         package='ros_gz_bridge',
@@ -120,6 +205,9 @@ def generate_launch_description():
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
             '/camera@sensor_msgs/msg/Image@gz.msgs.Image',
             '/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',
+            '/lidar@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
+            '/lidar/points@sensor_msgs/msg/PointCloud2@gz.msgs.PointCloudPacked',
+            '/imu@sensor_msgs/msg/Imu@gz.msgs.IMU',
         ],
         remappings=[
             ('/camera', '/camera/image_raw'),
@@ -136,8 +224,12 @@ def generate_launch_description():
         declare_use_sim_time,
         declare_world,
         robot_state_publisher,
-        joint_state_publisher,
+        lidar_tf_alias,
+        imu_tf_alias,
         gazebo,
         spawn_entity,
+        spawn_controllers,
         gz_bridge,
+        wheel_odom,
+        ackerman,
     ])
