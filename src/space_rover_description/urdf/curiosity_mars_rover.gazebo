@@ -9,10 +9,13 @@
 
   <gazebo reference="camera_link">
     <sensor type="camera" name="camera1">
+      <always_on>1</always_on>
       <update_rate>10.0</update_rate>
+      <visualize>true</visualize>
+      <topic>/camera</topic>
       <camera name="head">
-
-          <pose>0 0 0 0 0 1.57</pose>
+        <pose>0 0 0 0 0 0</pose>
+        <camera_info_topic>/camera_info</camera_info_topic>
 
         <horizontal_fov>1.3962634</horizontal_fov>
         <image>
@@ -29,6 +32,46 @@
           <stddev>0.007</stddev>
         </noise>
       </camera>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="lidar_link">
+    <sensor type="gpu_lidar" name="lidar_sensor">
+      <always_on>1</always_on>
+      <update_rate>10.0</update_rate>
+      <topic>/lidar</topic>
+      <frame_id>lidar_link</frame_id>
+      <visualize>true</visualize>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
+          </horizontal>
+          <vertical>
+            <samples>16</samples>
+            <resolution>1</resolution>
+            <min_angle>-0.261799</min_angle>
+            <max_angle>0.261799</max_angle>
+          </vertical>
+        </scan>
+        <range>
+          <min>0.1</min>
+          <max>30.0</max>
+          <resolution>0.01</resolution>
+        </range>
+      </ray>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="imu_link">
+    <sensor type="imu" name="imu_sensor">
+      <always_on>1</always_on>
+      <update_rate>50.0</update_rate>
+      <topic>/imu</topic>
+      <visualize>true</visualize>
     </sensor>
   </gazebo>
 

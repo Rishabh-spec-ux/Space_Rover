@@ -7,11 +7,52 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
+
+add_executable(wheel_encoder_odometry src/wheel_encoder_odometry.cpp)
+ament_target_dependencies(
+  wheel_encoder_odometry
+  rclcpp
+  sensor_msgs
+  nav_msgs
+  geometry_msgs
+  tf2_ros
+)
+
+add_executable(ackerman_6_wheels src/ackerman_6_wheels.cpp)
+ament_target_dependencies(
+  ackerman_6_wheels
+  rclcpp
+  std_msgs
+  geometry_msgs
+)
+
+add_executable(arm_and_mast src/arm_and_mast.cpp)
+ament_target_dependencies(
+  arm_and_mast
+  rclcpp
+  std_msgs
+  std_srvs
+)
 
 # Install launch files, URDF/XACRO, meshes, and worlds
 install(
   DIRECTORY launch urdf meshes worlds rviz models config scripts
   DESTINATION share/${PROJECT_NAME}
+)
+
+install(
+  TARGETS
+    wheel_encoder_odometry
+    ackerman_6_wheels
+    arm_and_mast
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)
